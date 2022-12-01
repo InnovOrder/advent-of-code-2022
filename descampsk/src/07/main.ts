@@ -1,14 +1,16 @@
 import { readInputs } from "../helpers/read-inputs";
 
-const TEST_INPUT_PATH = `${__dirname}/input.test`;
-const INPUT_PATH = `${__dirname}/input.test`;
+const TEST_INPUT_PATH = `${__dirname}/input.test.txt`;
+const INPUT_PATH = `${__dirname}/input.txt`;
 
 const resolveFirstPuzzle = async (inputPath: string) => {
   const lines = await readInputs(inputPath);
+  return 0;
 };
 
 const resolveSecondPuzzle = async (inputPath: string) => {
   const lines = await readInputs(inputPath);
+  return 0;
 };
 
 const main = async () => {
