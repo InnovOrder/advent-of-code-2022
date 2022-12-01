@@ -1,4 +1,4 @@
-import { readInputs } from '../helpers/read-inputs';
+import { readInputs } from "../helpers/read-inputs";
 
 const TEST_INPUT_PATH = `${__dirname}/input.test.txt`;
 const INPUT_PATH = `${__dirname}/input.txt`;
@@ -13,7 +13,7 @@ const getElvesLoad = (inputs: string[]): number[] => {
       }
       return acc;
     },
-    [0],
+    [0]
   );
 };
 
@@ -31,16 +31,19 @@ const resolveSecondPuzzle = async (inputPath: string) => {
 
 const main = async () => {
   const resultFirstPuzzleTest = await resolveFirstPuzzle(TEST_INPUT_PATH);
-  console.log('The result of the first puzzle test is:', resultFirstPuzzleTest);
+  console.log("The result of the first puzzle test is:", resultFirstPuzzleTest);
   const resultFirstPuzzle = await resolveFirstPuzzle(INPUT_PATH);
-  console.log('The result of the first puzzle is: ', resultFirstPuzzle);
+  console.log("The result of the first puzzle is: ", resultFirstPuzzle);
 
   const resultSecondPuzzleTest = await resolveSecondPuzzle(TEST_INPUT_PATH);
-  console.log('The result of the second puzzle test is:', resultSecondPuzzleTest);
+  console.log(
+    "The result of the second puzzle test is:",
+    resultSecondPuzzleTest
+  );
   const resultSecondPuzzle = await resolveSecondPuzzle(INPUT_PATH);
-  console.log('The result of the second puzzle is: ', resultSecondPuzzle);
+  console.log("The result of the second puzzle is: ", resultSecondPuzzle);
 };
 
-main().catch(error => {
+main().catch((error) => {
   console.error(error);
 });
