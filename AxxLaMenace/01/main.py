@@ -5,7 +5,7 @@ def solve_first_puzzle(data):
 
 
 def solve_second_puzzle(data):
-    return sum(data[i] for i in range(3))
+    return sum(data[:3])
 
 if __name__ == '__main__':
     with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:

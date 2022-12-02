@@ -48,11 +48,7 @@ const computeScoreB = (player1: Input, player2: Hint): number => {
     (player1 === "C" && player2 === "X")
   ) {
     score += 2;
-  } else if (
-    (player1 === "C" && player2 === "Y") ||
-    (player1 === "B" && player2 === "Z") ||
-    (player1 === "A" && player2 === "X")
-  ) {
+  } else {
     score += 3;
   }
 
