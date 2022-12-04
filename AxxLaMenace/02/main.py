@@ -12,7 +12,6 @@ def solve_first_puzzle(data):
         score += win_lose + b+1
     return score
 
-
 def solve_second_puzzle(data):
     score = 0
     for move1, move2 in data:
@@ -23,8 +22,7 @@ def solve_second_puzzle(data):
         score += win_lose + b+1
     return score
 
-if __name__ == '__main__':
-    with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
-        data = [line.split(' ') for line in f.read().splitlines()]
-    print("result first puzzle:", solve_first_puzzle(data))
-    print("result second puzzle:", solve_second_puzzle(data))
+with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+    data = [line.split(' ') for line in f.read().splitlines()]
+print("result first puzzle:", solve_first_puzzle(data))
+print("result second puzzle:", solve_second_puzzle(data))

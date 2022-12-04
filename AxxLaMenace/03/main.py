@@ -17,10 +17,8 @@ def solve_second_puzzle(data):
     items = [common_three(data[i], data[i+1], data[i+2]) for i in range(0, len(data), 3)]
     return sum(transform(item) for item in items)
 
+with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+    data = f.read().splitlines()
 
-if __name__ == '__main__':
-    with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
-        data = f.read().splitlines()
-    
-    print("result first puzzle:", solve_first_puzzle(data))
-    print("result second puzzle:", solve_second_puzzle(data))
+print("result first puzzle:", solve_first_puzzle(data))
+print("result second puzzle:", solve_second_puzzle(data))
