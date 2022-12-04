@@ -6,8 +6,8 @@
 npm i
 ```
 
-## Launch the resolve of one day
+## Create the day and watch the resolve
 
 ```bash
-DAY=02 yarn resolve
+npm start 1
 ```

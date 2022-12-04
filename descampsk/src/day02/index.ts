@@ -1,7 +1,16 @@
-import { readInputs } from "../helpers/read-inputs";
+import run from "aocrunner";
+import { readFileSync } from "fs";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import _ from "lodash";
+import { dirname, join } from "path";
+import { fileURLToPath } from "url";
 
-const TEST_INPUT_PATH = `${__dirname}/input.test.txt`;
-const INPUT_PATH = `${__dirname}/input.txt`;
+const parseInput = (rawInput: string) => rawInput.split(/\r?\n/);
+const testFile = join(
+  dirname(fileURLToPath(import.meta.url)),
+  "./input.test.txt"
+).replace(/\/dist\//g, "/src/");
+const inputTest = readFileSync(testFile, "utf-8");
 
 const scoreTable: Record<string, number> = {
   "0 0": 1 + 3,
@@ -15,9 +24,8 @@ const scoreTable: Record<string, number> = {
   "2 2": 3 + 3,
 };
 
-const resolveFirstPuzzle = async (inputPath: string) => {
-  const lines = await readInputs(inputPath);
-  lines.pop();
+const part1 = (rawInput: string) => {
+  const lines = parseInput(rawInput);
   let score = 0;
   lines.forEach((line) => {
     const [opponent, myChoice] = line.split(" ");
@@ -29,9 +37,8 @@ const resolveFirstPuzzle = async (inputPath: string) => {
   return score;
 };
 
-const resolveSecondPuzzle = async (inputPath: string) => {
-  const lines = await readInputs(inputPath);
-  lines.pop();
+const part2 = (rawInput: string) => {
+  const lines = parseInput(rawInput);
   let score = 0;
   lines.forEach((line) => {
     const [opponent, winLoseDraw] = line.split(" ");
@@ -59,21 +66,25 @@ const resolveSecondPuzzle = async (inputPath: string) => {
   return score;
 };
 
-const main = async () => {
-  const resultFirstPuzzleTest = await resolveFirstPuzzle(TEST_INPUT_PATH);
-  console.log("The result of the first puzzle test is:", resultFirstPuzzleTest);
-  const resultFirstPuzzle = await resolveFirstPuzzle(INPUT_PATH);
-  console.log("The result of the first puzzle is: ", resultFirstPuzzle);
-
-  const resultSecondPuzzleTest = await resolveSecondPuzzle(TEST_INPUT_PATH);
-  console.log(
-    "The result of the second puzzle test is:",
-    resultSecondPuzzleTest
-  );
-  const resultSecondPuzzle = await resolveSecondPuzzle(INPUT_PATH);
-  console.log("The result of the second puzzle is: ", resultSecondPuzzle);
-};
-
-main().catch((error) => {
-  console.error(error);
+run({
+  part1: {
+    tests: [
+      {
+        input: inputTest,
+        expected: 15,
+      },
+    ],
+    solution: part1,
+  },
+  part2: {
+    tests: [
+      {
+        input: inputTest,
+        expected: 12,
+      },
+    ],
+    solution: part2,
+  },
+  trimTestInputs: true,
+  onlyTests: false,
 });
