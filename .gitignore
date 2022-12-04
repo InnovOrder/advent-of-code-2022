@@ -8,3 +8,9 @@ node_modules
 # Python
 .pyc
 __pycache__
+
+# Build
+dist
+
+#Environment files
+.env
