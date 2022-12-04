@@ -9,6 +9,6 @@ def solve_second_puzzle(data):
 
 if __name__ == '__main__':
     with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
-        data = sorted([sum([int(elem) for elem in elem_list.split('\n')]) for elem_list in f.read().split('\n\n')], reverse=True)
+        data = sorted([sum(map(int, elem_list.split('\n'))) for elem_list in f.read().split('\n\n')], reverse=True)
     print("result first puzzle:", solve_first_puzzle(data))
     print("result second puzzle:", solve_second_puzzle(data))

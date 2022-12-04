@@ -5,12 +5,37 @@ const INPUT_PATH = `${__dirname}/input.txt`;
 
 const resolveFirstPuzzle = async (inputPath: string) => {
   const lines = await readInputs(inputPath);
-  return 0;
+  lines.pop();
+  let sum = 0;
+  lines.forEach((line) => {
+    const [pair1, pair2] = line.split(",");
+    const [a, b] = pair1.split("-").map((value) => Number.parseInt(value, 10));
+    const [x, y] = pair2.split("-").map((value) => Number.parseInt(value, 10));
+    if ((a >= x && b <= y) || (x >= a && y <= b)) {
+      sum += 1;
+    }
+  });
+  return sum;
 };
 
 const resolveSecondPuzzle = async (inputPath: string) => {
   const lines = await readInputs(inputPath);
-  return 0;
+  lines.pop();
+  let sum = 0;
+  lines.forEach((line) => {
+    const [pair1, pair2] = line.split(",");
+    const [a, b] = pair1.split("-").map((value) => Number.parseInt(value, 10));
+    const [x, y] = pair2.split("-").map((value) => Number.parseInt(value, 10));
+    if (
+      (a >= x && a <= y) ||
+      (b <= y && b >= y) ||
+      (x >= a && x <= b) ||
+      (y <= b && y >= a)
+    ) {
+      sum += 1;
+    }
+  });
+  return sum;
 };
 
 const main = async () => {

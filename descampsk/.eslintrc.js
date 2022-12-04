@@ -27,5 +27,6 @@ module.exports = {
     "import/extensions": "off",
     "no-console": "off",
     "import/prefer-default-export": "off",
+    "no-restricted-syntax": "off",
   },
 };
