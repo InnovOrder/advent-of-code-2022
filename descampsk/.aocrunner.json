@@ -61,16 +61,16 @@
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "CWMTGHBDW",
         "attempts": [],
-        "time": null
+        "time": 0.9722
       },
       "part2": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "SSCGWJCRB",
         "attempts": [],
-        "time": null
+        "time": 5.459
       }
     },
     {
