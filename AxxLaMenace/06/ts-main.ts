@@ -19,3 +19,5 @@ const main = async () => {
 };
 
 main().catch((error) => console.error(error));
+
+// DAY=06 npm run resolve
