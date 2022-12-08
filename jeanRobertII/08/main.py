@@ -1,13 +1,18 @@
 import json
 
 file = open('./data.json')
-treeHeightMap = json.load(file)
-
-tmpRow = 0
-tmpCol = 0
-tmpTreeHeight = 0
+rawTreeHeightMap = json.load(file)
 
 
+# Convert rows to int
+treeHeightMap = [[] for _ in range(len(rawTreeHeightMap))]
+for rowIndex in range(len(rawTreeHeightMap)):
+    for colIndex in range(len(rawTreeHeightMap[rowIndex])):
+        treeHeightMap[rowIndex].append(
+            int(rawTreeHeightMap[rowIndex][colIndex]))
+
+
+# Convert cols to int
 columns = [[] for _ in range(len(treeHeightMap[0]))]
 for rowIndex in range(len(treeHeightMap)):
     for colIndex in range(len(treeHeightMap[rowIndex])):
@@ -57,12 +62,8 @@ for rowIndex in range(len(treeHeightMap)):
     for colIndex in range(len(treeHeightMap[rowIndex])):
         treeHeight = treeHeightMap[rowIndex][colIndex]
 
-        tmpRow = rowIndex
-        tmpCol = colIndex
-        tmpTreeHeight = treeHeight
-
-        leftTrees = list(map(int, treeHeightMap[rowIndex][:colIndex]))[::-1]
-        rightTrees = list(map(int, treeHeightMap[rowIndex][colIndex+1:]))
+        leftTrees = treeHeightMap[rowIndex][:colIndex][::-1]
+        rightTrees = treeHeightMap[rowIndex][colIndex+1:]
 
         currentColumn = columns[colIndex]
 
@@ -85,3 +86,5 @@ for rowIndex in range(len(treeHeightMap)):
 
 print(f"Part One: {len(visibleTrees) == 1794}")
 print(f"Part Two: {max(scenicScores) == 199272}")
+print(f"Part One: {len(visibleTrees) == 21}")
+print(f"Part Two: {max(scenicScores) == 8}")
