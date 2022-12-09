@@ -1,48 +1,61 @@
-/* eslint-disable no-param-reassign */
+/* eslint-disable max-classes-per-file */
 import { readInputs } from "../helpers/read-inputs";
 
 const TEST_INPUT_PATH = `${__dirname}/input.test.txt`;
 const INPUT_PATH = `${__dirname}/input.txt`;
 
-type Position = {
-  x: number;
-  y: number;
-};
+class Head {
+  x = 0;
 
-const moveHead = (head: Position, direction: string) => {
-  if (direction === "U") head.x -= 1;
-  if (direction === "D") head.x += 1;
-  if (direction === "L") head.y -= 1;
-  if (direction === "R") head.y += 1;
-};
+  y = 0;
 
-const followHead = (head: Position, tail: Position) => {
-  if (Math.abs(tail.x - head.x) <= 1 && Math.abs(tail.y - head.y) <= 1) return;
+  move = (direction: string) => {
+    if (direction === "U") this.x -= 1;
+    if (direction === "D") this.x += 1;
+    if (direction === "L") this.y -= 1;
+    if (direction === "R") this.y += 1;
+  };
+}
+class Body {
+  x = 0;
 
-  if (head.x > tail.x) {
-    tail.x++;
-  } else if (head.x < tail.x) {
-    tail.x--;
-  }
-  if (head.y > tail.y) {
-    tail.y++;
-  } else if (head.y < tail.y) {
-    tail.y--;
-  }
-};
+  y = 0;
+
+  // eslint-disable-next-line no-useless-constructor
+  constructor(private previousPart: Head | Body) {}
+
+  move = () => {
+    if (
+      Math.abs(this.x - this.previousPart.x) <= 1 &&
+      Math.abs(this.y - this.previousPart.y) <= 1
+    )
+      return;
+
+    if (this.previousPart.x > this.x) {
+      this.x++;
+    } else if (this.previousPart.x < this.x) {
+      this.x--;
+    }
+    if (this.previousPart.y > this.y) {
+      this.y++;
+    } else if (this.previousPart.y < this.y) {
+      this.y--;
+    }
+  };
+}
 
 const resolveFirstPuzzle = async (inputPath: string) => {
   const lines = await readInputs<string>(inputPath);
-  const head: Position = { x: 0, y: 0 };
-  const tail: Position = { x: 0, y: 0 };
+  const head = new Head();
+  const tail = new Body(head);
   const moves = new Set();
   moves.add(`${tail.x}.${tail.y}`);
 
   lines.forEach((move) => {
     const [direction, steps] = move.split(" ");
     for (let i = 0; i < Number(steps); i++) {
-      moveHead(head, direction);
-      followHead(head, tail);
+      head.move(direction);
+      tail.move();
       moves.add(`${tail.x}.${tail.y}`);
     }
   });
@@ -52,18 +65,19 @@ const resolveFirstPuzzle = async (inputPath: string) => {
 
 const resolveSecondPuzzle = async (inputPath: string) => {
   const lines = await readInputs<string>(inputPath);
-  const head: Position = { x: 0, y: 0 };
-  const body: Position[] = [];
-  for (let i = 0; i <= 8; i++) body.push({ x: 0, y: 0 });
+  const head = new Head();
+  const body: Body[] = [];
+  for (let i = 0; i <= 8; i++)
+    body.push(new Body(i === 0 ? head : body[i - 1]));
+
   const moves = new Set();
   moves.add(`${body[8].x}.${body[8].y}`); // tail = last part of body
 
   lines.forEach((move) => {
     const [direction, steps] = move.split(" ");
     for (let step = 0; step < Number(steps); step++) {
-      moveHead(head, direction);
-      for (let i = 0; i <= 8; i++)
-        followHead(i === 0 ? head : body[i - 1], body[i]);
+      head.move(direction);
+      body.forEach((bodyPart) => bodyPart.move());
 
       moves.add(`${body[8].x}.${body[8].y}`);
     }
