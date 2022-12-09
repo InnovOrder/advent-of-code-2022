@@ -16,13 +16,13 @@ class Head {
     if (direction === "R") this.y += 1;
   };
 }
-class Body {
+class BodyPart {
   x = 0;
 
   y = 0;
 
   // eslint-disable-next-line no-useless-constructor
-  constructor(private previousPart: Head | Body) {}
+  constructor(private previousPart: Head | BodyPart) {}
 
   move = () => {
     if (
@@ -44,19 +44,40 @@ class Body {
   };
 }
 
+class Snake {
+  head: Head;
+
+  bodyParts: BodyPart[] = [];
+
+  constructor(size: number) {
+    this.head = new Head();
+    for (let i = 0; i < size; i++)
+      this.bodyParts.push(
+        new BodyPart(i === 0 ? this.head : this.bodyParts[i - 1])
+      );
+  }
+
+  move = (direction: string) => {
+    this.head.move(direction);
+    this.bodyParts.forEach((bodyPart) => bodyPart.move());
+  };
+
+  getTailPosition = () => {
+    const tail = this.bodyParts[this.bodyParts.length - 1];
+    return `${tail.x}.${tail.y}`;
+  };
+}
+
 const resolveFirstPuzzle = async (inputPath: string) => {
   const lines = await readInputs<string>(inputPath);
-  const head = new Head();
-  const tail = new Body(head);
-  const moves = new Set();
-  moves.add(`${tail.x}.${tail.y}`);
+  const snake = new Snake(1);
+  const moves = new Set<string>([snake.getTailPosition()]);
 
   lines.forEach((move) => {
     const [direction, steps] = move.split(" ");
     for (let i = 0; i < Number(steps); i++) {
-      head.move(direction);
-      tail.move();
-      moves.add(`${tail.x}.${tail.y}`);
+      snake.move(direction);
+      moves.add(snake.getTailPosition());
     }
   });
 
@@ -65,21 +86,14 @@ const resolveFirstPuzzle = async (inputPath: string) => {
 
 const resolveSecondPuzzle = async (inputPath: string) => {
   const lines = await readInputs<string>(inputPath);
-  const head = new Head();
-  const body: Body[] = [];
-  for (let i = 0; i <= 8; i++)
-    body.push(new Body(i === 0 ? head : body[i - 1]));
-
-  const moves = new Set();
-  moves.add(`${body[8].x}.${body[8].y}`); // tail = last part of body
+  const snake = new Snake(9);
+  const moves = new Set<string>([snake.getTailPosition()]);
 
   lines.forEach((move) => {
     const [direction, steps] = move.split(" ");
     for (let step = 0; step < Number(steps); step++) {
-      head.move(direction);
-      body.forEach((bodyPart) => bodyPart.move());
-
-      moves.add(`${body[8].x}.${body[8].y}`);
+      snake.move(direction);
+      moves.add(snake.getTailPosition());
     }
   });
 
