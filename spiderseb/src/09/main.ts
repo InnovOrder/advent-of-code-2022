@@ -9,13 +9,14 @@ class Head {
 
   y = 0;
 
-  move = (direction: string) => {
+  move(direction: string) {
     if (direction === "U") this.x -= 1;
     if (direction === "D") this.x += 1;
     if (direction === "L") this.y -= 1;
     if (direction === "R") this.y += 1;
-  };
+  }
 }
+
 class BodyPart {
   x = 0;
 
@@ -24,7 +25,7 @@ class BodyPart {
   // eslint-disable-next-line no-useless-constructor
   constructor(private previousPart: Head | BodyPart) {}
 
-  move = () => {
+  move() {
     if (
       Math.abs(this.x - this.previousPart.x) <= 1 &&
       Math.abs(this.y - this.previousPart.y) <= 1
@@ -41,7 +42,7 @@ class BodyPart {
     } else if (this.previousPart.y < this.y) {
       this.y--;
     }
-  };
+  }
 }
 
 class Snake {
@@ -57,15 +58,15 @@ class Snake {
       );
   }
 
-  move = (direction: string) => {
+  move(direction: string) {
     this.head.move(direction);
     this.bodyParts.forEach((bodyPart) => bodyPart.move());
-  };
+  }
 
-  getTailPosition = () => {
+  getTailPosition() {
     const tail = this.bodyParts[this.bodyParts.length - 1];
     return `${tail.x}.${tail.y}`;
-  };
+  }
 }
 
 const resolveFirstPuzzle = async (inputPath: string) => {
