@@ -15,7 +15,7 @@
   "author": "descampsk",
   "license": "ISC",
   "dependencies": {
-    "aocrunner": "^1.9.5",
+    "aocrunner": "^1.9.6",
     "lodash": "4.17.21"
   },
   "devDependencies": {
