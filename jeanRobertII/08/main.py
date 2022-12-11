@@ -5,11 +5,7 @@ rawTreeHeightMap = json.load(file)
 
 
 # Convert rows to int
-treeHeightMap = [[] for _ in range(len(rawTreeHeightMap))]
-for rowIndex in range(len(rawTreeHeightMap)):
-    for colIndex in range(len(rawTreeHeightMap[rowIndex])):
-        treeHeightMap[rowIndex].append(
-            int(rawTreeHeightMap[rowIndex][colIndex]))
+treeHeightMap = [int(row.split()) for row in rawTreeHeightMap]
 
 
 # Convert cols to int
@@ -24,7 +20,7 @@ def isOnEdge(rowIndex: int, colIndex: int, currentRow, currentCol) -> bool:
 
 
 def isHighest(treeHeight: int, otherTreeHeights) -> bool:
-    return max(otherTreeHeights) < int(treeHeight)
+    return max(otherTreeHeights) < treeHeight
 
 
 def isVisible(treeHeight: int, leftTrees, rightTrees, topTrees, bottomTrees) -> bool:
@@ -39,7 +35,7 @@ def getLowerTrees(treeHeight: int, columnOrRow) -> int:
 
     for loopedTreeHeight in columnOrRow:
         vision += 1
-        if int(loopedTreeHeight) >= int(treeHeight):
+        if loopedTreeHeight >= treeHeight:
             break
 
     return vision
