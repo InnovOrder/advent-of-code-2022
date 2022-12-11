@@ -1,40 +1,26 @@
 import os
 
-direction_dict = {
-    'R':(1,0),
-    'L':(-1,0),
-    'U':(0,1),
-    'D':(0,-1),
-}
-
-def get_adjacents(node):
-    return [[sum(x) for x in zip(node, (dx,dy))] for dy in [-1,0,1] for dx in [-1,0,1]]
-
-def dist(a, b):
-    return (a[0]-b[0])**2 + (a[1]-b[1])**2
-
-def move_head(head, direction):
-    return [sum(x) for x in zip(head, direction_dict[direction])]
+def sign(x):
+    return x//abs(x) if x else 0
 
 def move_tail(head, tail):
-    def dist2(u): return dist(u, head)
-    if dist(head, tail) > 2:
-        tail = min(get_adjacents(tail), key=dist2)
-    return tail
+    if (head[0] - tail[0])**2 + (head[1] - tail[1])**2 > 2:
+        tail[0] += sign(head[0] - tail[0])
+        tail[1] += sign(head[1] - tail[1])
 
 def solve(data, rope_length):
-    nodes = [(0,0)]*rope_length
-    visited = {nodes[-1]}
+    dir_map = {'R': (1, 0), 'L': (-1, 0), 'U': (0, 1), 'D': (0, -1)}
+    nodes = [[0, 0] for _ in range(rope_length)]
+    visited = {(0, 0)}
     for (direction, n) in data:
-        for i in range(int(n)):
-            nodes[0] = move_head(nodes[0], direction)
+        for _ in range(n):
+            nodes[0] = [sum(x) for x in zip(nodes[0], dir_map[direction])]
             for k in range(rope_length-1):
-                nodes[k+1] = move_tail(nodes[k], nodes[k+1])
+                move_tail(nodes[k], nodes[k+1])
             visited.add(tuple(nodes[-1]))
     return len(visited)
-            
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
-    data = [row.split(' ')for row in f.read().splitlines()]
 
+with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+    data = [[dir, int(n)] for dir, n in [row.split() for row in f.read().splitlines()]]
 print(solve(data, 2))
 print(solve(data, 10))
