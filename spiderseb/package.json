@@ -6,6 +6,7 @@
   "scripts": {
     "test": "jest",
     "resolve": "ts-node ./src/${DAY:=01}/main.ts",
+    "resolve-js": "tsc ./src/${DAY:=01}/main.ts && node --max-old-space-size=24000 ./src/${DAY:=01}/main.js",
     "plop": "plop",
     "p": "prettier --write ."
   },
