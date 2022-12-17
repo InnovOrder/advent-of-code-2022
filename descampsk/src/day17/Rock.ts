@@ -16,24 +16,18 @@ export abstract class Rock {
 
   isBlocked = false;
 
-  isBlockedLeft(blocked: Record<number, Set<number>>) {
+  isBlockedLeft(blocked: Map<number, Set<number>>) {
     for (const block of this.blocks) {
-      if (
-        block.x === 0 ||
-        (blocked[block.y] && blocked[block.y].has(block.x - 1))
-      ) {
+      if (block.x === 0 || blocked.get(block.y)?.has(block.x - 1)) {
         return true;
       }
     }
     return false;
   }
 
-  isBlockedRight(widght: number, blocked: Record<number, Set<number>>) {
+  isBlockedRight(widght: number, blocked: Map<number, Set<number>>) {
     for (const block of this.blocks) {
-      if (
-        block.x === widght - 1 ||
-        (blocked[block.y] && blocked[block.y].has(block.x + 1))
-      ) {
+      if (block.x === widght - 1 || blocked.get(block.y)?.has(block.x + 1)) {
         return true;
       }
     }
