@@ -236,21 +236,21 @@
         "solved": true,
         "result": "2056",
         "attempts": [],
-        "time": 2003.8659
+        "time": 537.2555
       },
       "part2": {
         "solved": false,
         "result": "0",
         "attempts": [],
-        "time": 0.1742
+        "time": 280.2121
       }
     },
     {
       "part1": {
-        "solved": false,
-        "result": null,
+        "solved": true,
+        "result": "3188",
         "attempts": [],
-        "time": null
+        "time": 43.0501
       },
       "part2": {
         "solved": false,

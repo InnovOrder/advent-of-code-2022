@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable no-param-reassign */
 /* eslint-disable no-loop-func */
 import run from "aocrunner";
@@ -41,8 +42,6 @@ const getValves = (lines: string[]) => {
 };
 
 type State = {
-  position: string;
-  minutes: number;
   flow: number;
   total: number;
   opened: Set<string>;
@@ -51,83 +50,79 @@ type State = {
 const part1 = (rawInput: string) => {
   const lines = parseInput(rawInput);
   const valves = getValves(lines);
-  console.log(valves);
 
-  const states: Record<string, Record<number, Record<string, State>>> = {};
+  const states: Record<number, Record<string, Record<string, State>>> = {};
   let concurentPositions: Set<string> = new Set<string>().add("AA");
   const totalMinutes = 30;
-  Object.keys(valves).forEach((key) => {
-    states[key] = {};
-    for (let i = 0; i <= totalMinutes; i++) {
-      states[key][i] = {};
-    }
-  });
-  states.AA[0][""] = {
-    position: "AA",
-    minutes: 0,
+  for (let i = 0; i <= totalMinutes; i++) {
+    states[i] = {};
+    Object.keys(valves).forEach((key) => {
+      states[i][key] = {};
+    });
+  }
+  states[0].AA[""] = {
     flow: 0,
     total: 0,
     opened: new Set(),
   };
   let minutes = 0;
 
+  let maxPressure = 0;
+
   while (minutes < totalMinutes) {
     minutes += 1;
     const nextPositions: string[] = [];
     for (const position of concurentPositions) {
       const valve = valves[position];
-      const statesPerOpened = states[position][minutes - 1];
+      const statesPerOpened = states[minutes - 1][position];
       Object.values(statesPerOpened).forEach((state) => {
-        const openedStr = Array.from(state.opened).sort().join("");
-        if (state.opened.size === 6) {
-          nextPositions.push(position);
-          states[position][minutes][openedStr] = {
-            position,
-            minutes,
-            total: state.total + state.flow,
-            opened: state.opened,
-            flow: state.flow,
-          };
-        }
+        const openedStr = Array.from(state.opened).sort().join("-");
+        // if (state.opened.size === 6) {
+        //   nextPositions.push(position);
+        //   const total = state.total + state.flow;
+        //   states[minutes][position][openedStr] = {
+        //     total,
+        //     opened: state.opened,
+        //     flow: state.flow,
+        //   };
+        //   if (total > maxPressure) maxPressure = total;
+        // }
 
         if (!state.opened.has(position) && valve.rate > 0) {
-          const existingState = states[position][minutes][openedStr];
+          const existingState = states[minutes][position][openedStr];
           if (!existingState || existingState.flow <= state.flow) {
-            const max =
-              _.max([existingState?.total ?? 0, state.total + state.flow]) ??
-              state.total + state.flow;
+            const total = _.max([
+              existingState?.total,
+              state.total + state.flow,
+            ])!;
             const opened = new Set(state.opened).add(position);
-            const newOpenedStr = Array.from(opened).sort().join("");
-            states[position][minutes][newOpenedStr] = {
-              position,
-              minutes,
-              total:
-                existingState?.flow === state.flow
-                  ? max
-                  : state.total + state.flow,
+            const newOpenedStr = Array.from(opened).sort().join("-");
+            states[minutes][position][newOpenedStr] = {
+              total,
               opened: new Set(state.opened).add(position),
               flow: state.flow + valve.rate,
             };
             nextPositions.push(position);
+            if (total > maxPressure) maxPressure = total;
           }
         }
         for (const tunnel of valve.tunnels) {
-          const existingState = states[tunnel][minutes][openedStr];
-          const max =
-            _.max([existingState?.total ?? 0, state.total + state.flow]) ??
-            state.total + state.flow;
-          if (!existingState || existingState.flow <= state.flow) {
+          const existingState = states[minutes][tunnel][openedStr];
+          const total = _.max([
+            existingState?.total,
+            state.total + state.flow,
+          ])!;
+          if (
+            (!existingState || existingState.flow <= state.flow) &&
+            (state.total < 50 || 2 * state.total > maxPressure)
+          ) {
             nextPositions.push(tunnel);
-            states[tunnel][minutes][openedStr] = {
-              position: tunnel,
-              minutes,
-              total:
-                existingState?.flow === state.flow
-                  ? max
-                  : state.total + state.flow,
+            states[minutes][tunnel][openedStr] = {
+              total,
               opened: state.opened,
               flow: state.flow,
             };
+            if (total > maxPressure) maxPressure = total;
           }
         }
       });
@@ -135,31 +130,127 @@ const part1 = (rawInput: string) => {
     concurentPositions = new Set(nextPositions);
   }
 
-  let max = 0;
-  const lastStates = Object.values(states).map((value) => value[totalMinutes]);
-  lastStates.forEach((value) =>
-    Object.values(value).forEach((state) => {
-      if (state.total > max) {
-        max = state.total;
-      }
-    })
-  );
-  console.log(
-    "bestStates",
-    lastStates
-      .map((value) => Object.values(value))
-      .flat()
-      .filter(
-        (state) =>
-          state.total > 1000 && ["CC", "BB", "DD"].includes(state.position)
-      )
-  );
-  return max;
+  //   console.log(states[totalMinutes]);
+
+  return maxPressure;
 };
 
 const part2 = (rawInput: string) => {
   const lines = parseInput(rawInput);
-  return 0;
+  const valves = getValves(lines);
+
+  const states: Record<number, Record<string, Record<string, State>>> = {};
+  let concurentPositions: Set<string> = new Set<string>().add("AA-AA");
+  const totalMinutes = 1;
+  for (let i = 0; i <= totalMinutes; i++) {
+    states[i] = {};
+    Object.keys(valves).forEach((me) => {
+      Object.keys(valves).forEach((elephant) => {
+        const key = [me, elephant].sort().join("-");
+        states[i][key] = {};
+      });
+    });
+  }
+  states[0]["AA-AA"][""] = {
+    flow: 0,
+    total: 0,
+    opened: new Set(),
+  };
+  let minutes = 0;
+
+  let maxPressure = 0;
+
+  while (minutes < totalMinutes) {
+    minutes += 1;
+    const nextPositions: string[] = [];
+    for (const position of concurentPositions) {
+      const statesPerOpened = states[minutes - 1][position];
+      Object.values(statesPerOpened).forEach((state) => {
+        const openedStr = Array.from(state.opened).sort().join("-");
+        const [mine, elephant] = position.split("-");
+        const isMineVanneOk =
+          !state.opened.has(mine) &&
+          valves[mine].rate > 0 &&
+          (!states[minutes][position][openedStr] ||
+            states[minutes][position][openedStr].flow <= state.flow);
+        const isElephantVanneOk =
+          !state.opened.has(elephant) &&
+          valves[elephant].rate > 0 &&
+          (!states[minutes][position][openedStr] ||
+            states[minutes][position][openedStr].flow <= state.flow);
+
+        if (isElephantVanneOk && isMineVanneOk) {
+          const opened = new Set(state.opened).add(mine).add(elephant);
+          const existingState = states[minutes][position][openedStr];
+          const total = _.max([
+            existingState?.total,
+            state.total + state.flow,
+          ])!;
+          const newOpenedStr = Array.from(opened).sort().join("-");
+          states[minutes][position][newOpenedStr] = {
+            total,
+            opened,
+            flow: state.flow + valves[mine].rate + valves[elephant].rate,
+          };
+          nextPositions.push(position);
+          if (total > maxPressure) maxPressure = total;
+        } else if (isElephantVanneOk) {
+          const opened = new Set(state.opened).add(elephant);
+          const existingState = states[minutes][position][openedStr];
+          const total = _.max([
+            existingState?.total,
+            state.total + state.flow,
+          ])!;
+          const newOpenedStr = Array.from(opened).sort().join("-");
+          states[minutes][position][newOpenedStr] = {
+            total,
+            opened,
+            flow: state.flow + valves[mine].rate + valves[elephant].rate,
+          };
+          nextPositions.push(position);
+          if (total > maxPressure) maxPressure = total;
+        }
+
+        // TODO open vannes
+        // const actions = [vanne vanne], [move, vanne], [vanne, move], [move, move]
+
+        // const valve = valves[position];
+        // if (!state.opened.has(position) && valve.rate > 0) {
+        //   const existingState = states[minutes][doublePosition][openedStr];
+        //   if (!existingState || existingState.flow <= state.flow) {
+
+        //   }
+        // }
+        for (const elephantTunnel of valves[elephant].tunnels) {
+          for (const mineTunnel of valves[mine].tunnels) {
+            const newPosition = [elephantTunnel, mineTunnel].sort().join("-");
+            const existingState = states[minutes][newPosition][openedStr];
+            const total = _.max([
+              existingState?.total,
+              state.total + state.flow,
+            ])!;
+            if (
+              (!existingState || existingState.flow <= state.flow) &&
+              (state.total < 50 || 2 * state.total > maxPressure)
+            ) {
+              nextPositions.push(newPosition);
+              states[minutes][newPosition][openedStr] = {
+                total,
+                opened: state.opened,
+                flow: state.flow,
+              };
+              if (total > maxPressure) maxPressure = total;
+            }
+          }
+        }
+      });
+    }
+    concurentPositions = new Set(nextPositions);
+  }
+
+  console.log(states[totalMinutes]);
+
+  return maxPressure;
 };
 
 run({
