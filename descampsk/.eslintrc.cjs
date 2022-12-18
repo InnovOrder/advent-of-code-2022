@@ -29,5 +29,6 @@ module.exports = {
     "import/prefer-default-export": "off",
     "no-restricted-syntax": "off",
     "import/no-unresolved": "off",
+    "@typescript-eslint/no-non-null-assertion": "off",
   },
 };
