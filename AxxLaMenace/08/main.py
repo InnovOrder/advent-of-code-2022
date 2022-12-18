@@ -1,4 +1,4 @@
-import os
+from os.path import join, dirname
 
 def get_edges(n):
     seen = set()
@@ -50,16 +50,16 @@ def compute_view(direction, size):
     return view
 
 
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     matrix = [list(map(int, list(row))) for row in f.read().splitlines()]
     matrix_t = [*zip(*matrix)]
 n = len(matrix)
 visibles = get_edges(n)
-print('puzzle_1 =', puzzle_1(matrix, n, visibles))
+print('PART_1', puzzle_1(matrix, n, visibles))
 
 score_max = 0
 for i in range(1, n-1):
     for j in range(1, n-1):
         new_score = score(matrix, matrix_t, i, j)
         score_max = max(score_max, new_score)
-print('puzzle_2 =', score_max)
+print('PART_2', score_max)

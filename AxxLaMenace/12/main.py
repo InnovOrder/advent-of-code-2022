@@ -1,4 +1,4 @@
-import os
+from os.path import join, dirname
 from heapq import heappush, heappop
 
 def char_to_int(char):
@@ -29,7 +29,7 @@ def dijkstra(matrix, target=0):
                 if matrix[i1][j1] == target:
                     return dist + 1
 
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     matrix = [list(map(char_to_int, list(line))) for line in f.read().splitlines()]
-print(dijkstra(matrix, target=0))
-print(dijkstra(matrix, target=1))
+print('PART_1', dijkstra(matrix, target=0))
+print('PART_2', dijkstra(matrix, target=1))

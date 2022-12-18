@@ -1,4 +1,4 @@
-import os
+from os.path import join, dirname
 
 def sign(x):
     return x//abs(x) if x else 0
@@ -20,7 +20,7 @@ def solve(data, rope_length):
             visited.add(tuple(nodes[-1]))
     return len(visited)
 
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     data = [[dir, int(n)] for dir, n in [row.split() for row in f.read().splitlines()]]
-print(solve(data, 2))
-print(solve(data, 10))
+print('PART_1', solve(data, 2))
+print('PART_2', solve(data, 10))

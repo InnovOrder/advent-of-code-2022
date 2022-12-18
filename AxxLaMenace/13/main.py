@@ -1,5 +1,6 @@
-import os
+from os.path import join, dirname
 import math
+import json
 from functools import cmp_to_key
 
 def compare_int(left, right):
@@ -18,9 +19,8 @@ def compare(left, right):
                     return a
             return compare_int(len(left), len(right))
 
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
-    pairs = [[eval(line) for line in block.splitlines()]
-             for block in f.read().split('\n\n')]
+with open(join(dirname(__file__), 'data.txt')) as f:
+    pairs = [[json.loads(line) for line in block.splitlines()] for block in f.read().split('\n\n')]
 
 indices_right_order = [i+1 for i, p in enumerate(pairs) if compare(*p) <= 0]
 print('PART_1', sum(indices_right_order))

@@ -1,6 +1,6 @@
-import os
+from os.path import join, dirname
 
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     data = [row.split() for row in f.read().splitlines()]
 WIDTH = 40
 x = 1

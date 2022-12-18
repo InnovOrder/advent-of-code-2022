@@ -1,4 +1,4 @@
-import os
+from os.path import join, dirname
 
 direction_dict = {
     'R':(1,0),
@@ -33,7 +33,7 @@ def solve(data, rope_length):
             visited.add(tuple(nodes[-1]))
     return len(visited)
             
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     data = [row.split(' ')for row in f.read().splitlines()]
 
 print(solve(data, 2))

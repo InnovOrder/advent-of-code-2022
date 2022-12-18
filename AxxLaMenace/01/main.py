@@ -1,12 +1,6 @@
-import os
+from os.path import join, dirname
 
-def solve_first_puzzle(data):
-    return data[0]
-
-def solve_second_puzzle(data):
-    return sum(data[:3])
-
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     data = sorted([sum(map(int, elem_list.split('\n'))) for elem_list in f.read().split('\n\n')], reverse=True)
-print("result first puzzle:", solve_first_puzzle(data))
-print("result second puzzle:", solve_second_puzzle(data))
+print('PART_1', data[0])
+print('PART_2', sum(data[:3]))

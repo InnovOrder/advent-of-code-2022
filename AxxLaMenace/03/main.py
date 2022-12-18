@@ -1,24 +1,17 @@
-import os
-
-def common(ruck, n):
-    return set(ruck[:n//2]).intersection(ruck[n//2:]).pop()
+from os.path import join, dirname
 
 def transform(char):
     return ord(char) - ord('A') + 27 if char.isupper() else ord(char) - ord('a') + 1
 
-def solve_first_puzzle(data):
-    items = [common(ruck, len(ruck)) for ruck in data]
-    return sum(transform(item) for item in items)
-    
-def common_three(a, b, c):
-    return set(a).intersection(b).intersection(c).pop()
-
-def solve_second_puzzle(data):
-    items = [common_three(data[i], data[i+1], data[i+2]) for i in range(0, len(data), 3)]
+def solve(data, puzzle=1):
+    if puzzle == 1:
+        items = [(set(ruck[:n]) & set(ruck[n:])).pop() for ruck in data if (n := len(ruck)//2)]
+    else:
+        items = [(set(data[i]) & set(data[i+1]) & set(data[i+2])).pop() for i in range(0, len(data), 3)]
     return sum(transform(item) for item in items)
 
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     data = f.read().splitlines()
 
-print("result first puzzle:", solve_first_puzzle(data))
-print("result second puzzle:", solve_second_puzzle(data))
+print('PART_1', solve(data))
+print('PART_2', solve(data, 2))

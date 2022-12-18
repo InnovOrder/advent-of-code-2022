@@ -1,4 +1,4 @@
-import os
+from os.path import join, dirname
 from collections import defaultdict
 
 def create_operation(line):
@@ -29,7 +29,7 @@ def solve(data, rounds, puzzle=1):
     business = sorted(count.values())
     return business[-1] * business[-2]
 
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     data = [block.splitlines() for block in f.read().split('\n\n')]
-print(solve(data, 20, 1))
-print(solve(data, 10000, 2))
+print('PART_1', solve(data, 20, 1))
+print('PART_2', solve(data, 10000, 2))

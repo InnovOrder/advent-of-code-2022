@@ -1,4 +1,4 @@
-import os
+from os.path import join, dirname
 
 def find_marker(data, distincts):
     marker = []
@@ -11,8 +11,8 @@ def find_marker(data, distincts):
         if len(set(marker)) == distincts:
             return count
 
-with open(os.path.join(os.path.dirname(__file__), 'data.txt')) as f:
+with open(join(dirname(__file__), 'data.txt')) as f:
     data = list(f.read())
 
-print(find_marker(data, 4))
-print(find_marker(data, 14))
+print('PART_1', find_marker(data, 4))
+print('PART_2', find_marker(data, 14))
