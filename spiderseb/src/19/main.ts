@@ -39,13 +39,14 @@ const buildRobot = (
   oreCost: number,
   clayCost: number,
   obsidianCost: number,
-  state: State
+  state: State,
+  maxTime: number
 ): State | undefined => {
   if (unit === "ore" && state.production.ore >= 4) return undefined;
-  if (unit === "clay" && state.production.clay >= 14) return undefined;
+  if (unit === "clay" && state.production.clay >= 10) return undefined;
   if (
     unit === "obsidian" &&
-    (state.production.obsidian >= 14 || !state.production.clay)
+    (state.production.obsidian >= 12 || !state.production.clay)
   )
     return undefined;
   if (unit === "geode" && !state.production.obsidian) return undefined;
@@ -68,7 +69,7 @@ const buildRobot = (
 
   const nextTime = state.time + timeToBuild;
 
-  if (nextTime >= 25) return undefined;
+  if (nextTime > maxTime) return undefined;
 
   const newState: State = {
     production: { ...state.production },
@@ -85,28 +86,42 @@ const buildRobot = (
   return newState;
 };
 
-const getBuildOptions = (blueprint: Blueprint, state: State) => {
-  const oreBuild = buildRobot("ore", blueprint.oreRobotCost.ore, 0, 0, state);
+const getBuildOptions = (
+  blueprint: Blueprint,
+  state: State,
+  maxTime: number
+) => {
+  const oreBuild = buildRobot(
+    "ore",
+    blueprint.oreRobotCost.ore,
+    0,
+    0,
+    state,
+    maxTime
+  );
   const clayBuild = buildRobot(
     "clay",
     blueprint.clayRobotCost.ore,
     0,
     0,
-    state
+    state,
+    maxTime
   );
   const obsidianBuild = buildRobot(
     "obsidian",
     blueprint.obsidianRobotCost.ore,
     blueprint.obsidianRobotCost.clay,
     0,
-    state
+    state,
+    maxTime
   );
   const geodeBuild = buildRobot(
     "geode",
     blueprint.geodeRobotCost.ore,
     0,
     blueprint.geodeRobotCost.obsidian,
-    state
+    state,
+    maxTime
   );
 
   if (
@@ -130,7 +145,7 @@ const getBuildOptions = (blueprint: Blueprint, state: State) => {
   return builds;
 };
 
-const computeBlueprint = (blueprint: Blueprint): number => {
+const computeBlueprint = (blueprint: Blueprint, maxTime: number): number => {
   let currentBuild: State[] = [
     {
       production: { ore: 1, clay: 0, obsidian: 0, geode: 0 },
@@ -143,11 +158,11 @@ const computeBlueprint = (blueprint: Blueprint): number => {
   while (currentBuild.length) {
     const nextBuild: typeof currentBuild = [];
     currentBuild.forEach((build) => {
-      const possibleBuilds = getBuildOptions(blueprint, build);
+      const possibleBuilds = getBuildOptions(blueprint, build, maxTime);
 
       if (!possibleBuilds.length) {
         const endGeodes =
-          build.reserve.geode + build.production.geode * (23 - build.time);
+          build.reserve.geode + build.production.geode * (maxTime - build.time);
         if (endGeodes > maxGeodes) {
           maxGeodes = endGeodes;
         }
@@ -169,7 +184,7 @@ const resolveFirstPuzzle = async (inputPath: string) => {
   const lines = await readInputs<string>(inputPath);
   const blueprints = parseInputs(lines);
   const result = blueprints.reduce((max, blueprint) => {
-    const score = computeBlueprint(blueprint);
+    const score = computeBlueprint(blueprint, 24);
     return max + score * blueprint.id;
   }, 0);
   return result;
@@ -177,20 +192,25 @@ const resolveFirstPuzzle = async (inputPath: string) => {
 
 const resolveSecondPuzzle = async (inputPath: string) => {
   const lines = await readInputs<string>(inputPath);
-
-  return lines.length;
+  const blueprints = parseInputs(lines).filter((line, index) => index < 3);
+  const result = blueprints.reduce((max, blueprint) => {
+    const score = computeBlueprint(blueprint, 32);
+    console.log(`blueprint ID=${blueprint.id} score=${score}`);
+    return max * score;
+  }, 1);
+  return result;
 };
 
 const main = async () => {
   const result1Test = await resolveFirstPuzzle(TEST_INPUT_PATH);
   console.log("##  TEST 1  ##", result1Test); // 33
   const result1 = await resolveFirstPuzzle(INPUT_PATH);
-  console.log("## RESULT 1 ##", result1); // 1318 too low :(
+  console.log("## RESULT 1 ##", result1); // 1349
 
   const result2Test = await resolveSecondPuzzle(TEST_INPUT_PATH);
-  console.log("##  TEST 2  ##", result2Test);
+  console.log("##  TEST 2  ##", result2Test); // 56*62 = 3472 NEED LOT OF MEMORY
   const result2 = await resolveSecondPuzzle(INPUT_PATH);
-  console.log("## RESULT 2 ##", result2);
+  console.log("## RESULT 2 ##", result2); // 12*35*52 = 21840
 };
 
 main().catch((error) => console.error(error));
