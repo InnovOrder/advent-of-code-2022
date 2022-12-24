@@ -53,43 +53,32 @@ class Puzzle {
 
   moveElf(pos: Position): Position[] {
     const possiblePos: Position[] = [];
-    if (
-      !this.winds.some(({ position: p }) => p[0] === pos[0] && p[1] === pos[1])
-    )
-      possiblePos.push(pos);
-    if (
-      pos[0] < this.height - 2 &&
-      !this.winds.some(
-        ({ position: p }) => p[0] === pos[0] + 1 && p[1] === pos[1]
-      )
-    )
+    if (!this.hasWind(pos)) possiblePos.push(pos);
+    if (pos[0] < this.height - 2 && !this.hasWind([pos[0] + 1, pos[1]]))
       possiblePos.push([pos[0] + 1, pos[1]]);
-    if (
-      pos[0] > 1 &&
-      !this.winds.some(
-        ({ position: p }) => p[0] === pos[0] - 1 && p[1] === pos[1]
-      )
-    )
+    if (pos[0] > 1 && !this.hasWind([pos[0] - 1, pos[1]]))
       possiblePos.push([pos[0] - 1, pos[1]]);
     if (
       pos[0] > 0 &&
       pos[0] < this.height - 1 &&
       pos[1] < this.width - 2 &&
-      !this.winds.some(
-        ({ position: p }) => p[0] === pos[0] && p[1] === pos[1] + 1
-      )
+      !this.hasWind([pos[0], pos[1] + 1])
     )
       possiblePos.push([pos[0], pos[1] + 1]);
     if (
       pos[0] > 0 &&
       pos[0] < this.height - 1 &&
       pos[1] > 1 &&
-      !this.winds.some(
-        ({ position: p }) => p[0] === pos[0] && p[1] === pos[1] - 1
-      )
+      !this.hasWind([pos[0], pos[1] - 1])
     )
       possiblePos.push([pos[0], pos[1] - 1]);
     return possiblePos;
+  }
+
+  hasWind(target: Position): boolean {
+    return this.winds.some(
+      ({ position: p }) => p[0] === target[0] && p[1] === target[1]
+    );
   }
 
   timeToGo(from: Position, to: Position): number {
@@ -99,7 +88,7 @@ class Puzzle {
     while (currentPos.length) {
       time++;
       this.moveWind();
-      const nextPos: Position[] = []; // TODO perf : tester un Map avec pos en clé string
+      const nextPos: Position[] = []; // no better perf with a Set and string key
       for (const pos of currentPos) {
         const nextElfMoves = this.moveElf(pos);
         for (const nextElfMove of nextElfMoves) {
