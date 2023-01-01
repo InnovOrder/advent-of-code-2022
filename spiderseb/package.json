@@ -1,7 +1,7 @@
 {
-  "name": "aoc-descampsk",
+  "name": "aoc",
   "version": "1.0.0",
-  "description": "AOC for descampsk",
+  "description": "Advent Of Code 2022",
   "main": "index.js",
   "scripts": {
     "test": "jest",
